@@ -1,34 +1,21 @@
 name: Node.js CI & Docker Build
 
-# 【触发条件】剧本什么时候开演？
 on:
-  push: # 当有人直接推送到 main 分支时
+  push:
     branches: [ "main" ]
-  pull_request: # 当有人发起 PR 想合并到 main 分支时
+  pull_request:
     branches: [ "main" ]
 
 jobs:
   build-and-check:
-    # 【舞台】GitHub 会免费分配一台全新的干净 Ubuntu 服务器给你跑脚本
     runs-on: ubuntu-latest
 
     steps:
-    # 第1幕：把代码从 GitHub 仓库拉取到这台虚拟服务器上
+    # 第 1 步：拉取代码
     - name: 📥 Checkout code
       uses: actions/checkout@v4
 
-    # 第2幕：在服务器上安装 Node.js 环境
-    - name: ⚙️ Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-
-    # 第3幕：安装项目依赖
-    - name: 📦 Install Dependencies
-      run: npm ci
-
-    # 第4幕：最关键的测试！让服务器构建一遍 Docker 镜像。
-    # 只要这步不报错，就说明你的代码是 100% 可以在干净容器环境下运行的！
+    # 第 2 步：外部啥也不用装，直接呼叫 Docker 干活！
+    # 因为所有的环境配置、依赖安装，都已经封装在你的 Dockerfile 里面了！
     - name: 🐳 Build Docker Image
       run: docker build -t my-node-app:${{ github.sha }} .
