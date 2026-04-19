@@ -7,15 +7,32 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-check:
+  enterprise-ci-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-    # 第 1 步：拉取代码
-    - name: 📥 Checkout code
+    - name: 📥 1. 代码拉取
       uses: actions/checkout@v4
 
-    # 第 2 步：外部啥也不用装，直接呼叫 Docker 干活！
-    # 因为所有的环境配置、依赖安装，都已经封装在你的 Dockerfile 里面了！
-    - name: 🐳 Build Docker Image
+    - name: ⚙️ 2. 准备 Node 测试环境
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: 📦 3. 安装依赖
+      run: npm install
+
+    - name: 🔍 4. 运行代码规范检查 (Linting)
+      run: npm run lint
+      
+    - name: 🧪 5. 运行核心单元测试 (Unit Tests)
+      run: npm run test
+
+    - name: 🔐 6. 演示安全密钥读取 (Secrets injection)
+      # ⚠️ 注意这里：GitHub 会自动帮我们做“打码”处理
+      run: |
+        echo "正在使用数据库密码连接: ${{ secrets.MY_SUPER_SECRET }}"
+        echo "只要配置了 Secret，哪怕不小心被打印，日志里也会变成 ***"
+
+    - name: 🐳 7. 构建 Docker 镜像
       run: docker build -t my-node-app:${{ github.sha }} .
