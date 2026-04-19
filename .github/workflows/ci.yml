@@ -34,5 +34,12 @@ jobs:
         echo "正在使用数据库密码连接: ${{ secrets.MY_SUPER_SECRET }}"
         echo "只要配置了 Secret，哪怕不小心被打印，日志里也会变成 ***"
 
-    - name: 🐳 7. 构建 Docker 镜像
-      run: docker build -t my-node-app:${{ github.sha }} .
+    - name: 🔑 7. 登录到 Docker Hub 云端车库
+      # 安全登录，防止密码泄露
+      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: 🚀 8. 构建并推送镜像 (Push)
+      # ⚠️ 注意：推向云端的镜像标签，必须带有你的用户名做前缀！
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/my-node-app:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/my-node-app:latest
