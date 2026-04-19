@@ -8,4 +8,7 @@
     "lint": "echo '✅ 代码规范检查 (Lint) 完美通过'",
     "test": "node test.js"
   },
+  "dependencies": {
+    "express": "^4.19.0"
+  }
 }
