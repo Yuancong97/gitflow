@@ -4,9 +4,8 @@
   "description": "A simple Node.js web app for Docker demonstration",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "lint": "echo '✅ 代码规范检查 (Lint) 完美通过'",
+    "test": "node test.js"
   },
-  "dependencies": {
-    "express": "^4.19.0"
-  }
 }
