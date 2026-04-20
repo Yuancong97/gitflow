@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # 这份订单的名字
+  name: node-app-deployment
+spec:
+  # 最核心的魔法：我们声明要求系统里永远保持有 3 个副本同时运行！这也是大厂高可用的底气所在。
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-node-app
+  template:
+    metadata:
+      labels:
+        app: my-node-app
+    spec:
+      containers:
+      - name: my-node-container
+        # 司令部去哪里拉取镜像？填你今天推入云端车库的带用户名的绝对地址！
+        image: crossgreatwaller/my-node-app:latest
+        imagePullPolicy: Always
+        ports:
+        # 这个就是你在上一篇 app.js 里写的程序监听端口
+        - containerPort: 3000
